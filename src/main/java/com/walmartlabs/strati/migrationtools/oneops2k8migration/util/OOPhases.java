@@ -1,8 +1,5 @@
 package com.walmartlabs.strati.migrationtools.oneops2k8migration.util;
 
-import org.springframework.stereotype.Component;
-
-@Component
 public enum OOPhases {
 
 	DESIGN("design"), TRANSITION("transition"), OPERATE("operate");

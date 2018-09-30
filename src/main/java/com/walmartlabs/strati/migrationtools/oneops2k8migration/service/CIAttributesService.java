@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -12,9 +13,8 @@ import com.walmartlabs.strati.migrationtools.oneops2k8migration.dal.KloopzCmDal;
 import com.walmartlabs.strati.migrationtools.oneops2k8migration.util.BomCiType;
 import com.walmartlabs.strati.migrationtools.oneops2k8migration.util.BomClazzes;
 import com.walmartlabs.strati.migrationtools.oneops2k8migration.util.Circuit;
-import com.walmartlabs.strati.migrationtools.oneops2k8migration.util.CircuitconsolidationUtil;
 import com.walmartlabs.strati.migrationtools.oneops2k8migration.util.MigrationUtil;
-import com.walmartlabs.strati.migrationtools.oneops2k8migration.util.OOPhases;
+import com.walmartlabs.strati.migrationtools.oneops2k8migration.util.Platform;
 
 @Service
 public class CIAttributesService {
@@ -22,14 +22,12 @@ public class CIAttributesService {
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	KloopzCmDal dal;
-	MigrationUtil util;
 
 	public CIAttributesService(KloopzCmDal dal, MigrationUtil util) {
 		this.dal = dal;
-		this.util = util;
 	}
 
-	public Map<String, String> getCiAttributesByCiId(int ciId) {
+	private Map<String, String> getCiAttributesByCiId(int ciId) {
 
 		Map<String, String> ciAttrNameAndValuesMap = new HashMap<>();
 		ciAttrNameAndValuesMap = dal.getCIAttrNameAndValuesMapByCiId(ciId);
@@ -38,13 +36,12 @@ public class CIAttributesService {
 
 	}
 
-	public Map<String, String> getPlatAttribsMapForTomcatAndArtifactCI(String ns, String platformName, String envName) {
+	public Map<String, String> getPlatAttribsMapForTomcatAndArtifactCI(Platform platform) {
 		Map<String, String> platAttribsMapForTomcatAndArtifactCI = new HashMap<>();
 
-		Circuit circuit = getCircuit(ns, platformName);
-		String nsForPlatformCiComponents = CircuitconsolidationUtil.getnsForPlatformCiComponents(ns, platformName,
-				OOPhases.OPERATE, envName);
+		Circuit circuit = getCircuit(platform);
 
+		String nsForPlatformCiComponents = platform.getNsForPlatformCiComponents();
 		Map<String, String> tomcatBomCiAttributesMap = getBomCiAttributes(circuit, BomCiType.TOMCAT,
 				nsForPlatformCiComponents);
 		Map<String, String> artifactBomCiAttributesMap = getBomCiAttributes(circuit, BomCiType.ARTIFACT_APP,
@@ -119,10 +116,10 @@ public class CIAttributesService {
 
 	}
 
-	private Circuit getCircuit(String ns, String platformName) {
-		String platformClazz = "catalog.Platform";
-		Map<Integer, String> platformCiIdAndNameMap = dal.getCiIdsForNsClazzAndPlatformCiName(ns, platformClazz,
-				platformName);
+	private Circuit getCircuit(Platform platform) {
+		String platformDesignPhaseClazzClazz = "catalog.Platform";
+		Map<Integer, String> platformCiIdAndNameMap = dal.getCiIdsForNsClazzAndPlatformCiName(platform.getNs(),
+				platformDesignPhaseClazzClazz, platform.getPlatformName());
 		Circuit circuit = null;
 		for (int platformCiId : platformCiIdAndNameMap.keySet()) {
 
