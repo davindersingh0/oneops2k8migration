@@ -66,8 +66,11 @@ public class CIAttributesSvcController {
 
 			// TODO: VerifyPlatform
 			Map<String, String> responseMap = svc.getPlatAttribsMapForTomcatAndArtifactCI(platform);
+			log.info("responseMap: "+responseMap);
 
 			String yamlifiedObjectStr = util.yamlifyObject(responseMap);
+			log.info("yamlifiedObjectStr: "+yamlifiedObjectStr);
+
 
 			return yamlifiedObjectStr;
 
