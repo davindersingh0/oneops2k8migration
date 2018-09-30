@@ -2,21 +2,20 @@ package com.walmartlabs.strati.migrationtools.oneops2k8migration.service;
 
 import static org.mockito.Mockito.when;
 
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
+import com.walmartlabs.strati.migrationtools.oneops2k8migration.Oneops2k8migrationApplicationTests;
 import com.walmartlabs.strati.migrationtools.oneops2k8migration.dal.KloopzCmDal;
 import com.walmartlabs.strati.migrationtools.oneops2k8migration.util.BomClazzes;
 import com.walmartlabs.strati.migrationtools.oneops2k8migration.util.Circuit;
@@ -28,22 +27,22 @@ import com.walmartlabs.strati.migrationtools.oneops2k8migration.util.Platform;
  * @author dsing17
  *
  */
-
-@RunWith(MockitoJUnitRunner.class)
-public class CIAttributesServiceTest  {
+public class CIAttributesServiceTest2 extends Oneops2k8migrationApplicationTests {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
-
-	@Mock
+	
+	@MockBean
 	KloopzCmDal dal;
-
+	
 	@InjectMocks
 	private CIAttributesService service;
 
-	@Mock
+	@Autowired
 	MigrationUtil util;
-	
-	@Mock
+
+
+
+	@Autowired
 	private Platform platform;
 
 	private String orgName = "TestOrg2";
@@ -52,10 +51,8 @@ public class CIAttributesServiceTest  {
 	private String envName = "dev";
 
 	@Before
-	public void init() throws SQLException {
-		
+	public void init() {
 		MockitoAnnotations.initMocks(this);
-
 		platform.setOrgName(orgName);
 		platform.setAssemblyName(assemblyName);
 		platform.setPlatformName(platformName);
@@ -102,14 +99,16 @@ public class CIAttributesServiceTest  {
 		bomTomcatCiAttributesMap.put("tomcatAttribName2", "tomcatAttribValue2");
 
 		when(dal.getCIAttrNameAndValuesMapByCiId(2001)).thenReturn(bomTomcatCiAttributesMap);
-		
+		when(dal.getCIAttrNameAndValuesMapByCiId(2002)).thenReturn(bomTomcatCiAttributesMap);
+
 		HashMap<String, String> bomArtifactCiAttributesMap = new HashMap<>();
 
 		bomArtifactCiAttributesMap.put("ArtifactAppAttribName1", "ArtifactAppAttribValue1");
 		bomArtifactCiAttributesMap.put("ArtifactAppAttribName2", "ArtifactAppAttribValue2");
 
 		when(dal.getCIAttrNameAndValuesMapByCiId(3001)).thenReturn(bomArtifactCiAttributesMap);
-	
+		when(dal.getCIAttrNameAndValuesMapByCiId(3002)).thenReturn(bomArtifactCiAttributesMap);
+
 		Map<String, String> expectedPlatAttribsMapForTomcatAndArtifactCIMap = new HashMap<>();
 		expectedPlatAttribsMapForTomcatAndArtifactCIMap.putAll(bomTomcatCiAttributesMap);
 		expectedPlatAttribsMapForTomcatAndArtifactCIMap.putAll(bomArtifactCiAttributesMap);
@@ -119,8 +118,6 @@ public class CIAttributesServiceTest  {
 
 		Assert.assertEquals(expectedPlatAttribsMapForTomcatAndArtifactCIMap,
 				actualPlatAttribsMapForTomcatAndArtifactCIMap);
-
-		
 
 	}
 

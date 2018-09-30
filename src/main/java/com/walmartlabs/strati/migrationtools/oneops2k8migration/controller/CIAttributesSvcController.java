@@ -53,6 +53,14 @@ public class CIAttributesSvcController {
 		this.platform = platform;
 	}
 
+	/**
+	 * 
+	 * @param orgName
+	 * @param assemblyName
+	 * @param platformName
+	 * @param envName
+	 * @return Yamlified HashMap Object in String format
+	 */
 	@GetMapping("/org/{orgName}/assmebly/{assemblyName}/platform/{platformName}/env/{envName}")
 	public String getCiAttributesForTomcatMigration(@PathVariable String orgName, @PathVariable String assemblyName,
 			@PathVariable String platformName, @PathVariable String envName) {
@@ -72,6 +80,11 @@ public class CIAttributesSvcController {
 			Map<String, String> responseMap = svc.getPlatAttribsMapForTomcatAndArtifactCI(platform);
 			log.info("responseMap: "+responseMap);
 
+			responseMap.put("orgName", orgName);
+			responseMap.put("assemblyName", assemblyName);
+			responseMap.put("platformName", platformName);
+			responseMap.put("envName", envName);
+			
 			String yamlifiedObjectStr = util.yamlifyObject(responseMap);
 			log.info("yamlifiedObjectStr: "+yamlifiedObjectStr);
 

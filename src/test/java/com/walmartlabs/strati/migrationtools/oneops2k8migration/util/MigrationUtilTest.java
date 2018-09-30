@@ -7,10 +7,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 
 import com.walmartlabs.strati.migrationtools.oneops2k8migration.Oneops2k8migrationApplicationTests;
+import com.walmartlabs.strati.migrationtools.oneops2k8migration.dal.KloopzCmDal;
 
 /**
  * @author dsing17
@@ -21,6 +23,10 @@ public class MigrationUtilTest extends Oneops2k8migrationApplicationTests {
 	@Autowired
 	MigrationUtil util;
 
+	
+	@MockBean
+	KloopzCmDal dal;
+	
 	private String orgName;
 	private String assemblyName;
 	private String platformName;

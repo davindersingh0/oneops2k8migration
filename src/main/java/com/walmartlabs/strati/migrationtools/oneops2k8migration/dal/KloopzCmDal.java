@@ -28,16 +28,31 @@ public class KloopzCmDal {
 
 	Connection conn;
 
-	public KloopzCmDal(@Autowired DataSource dataSource) throws SQLException {
+	public KloopzCmDal(@Autowired DataSource dataSource) {
 		super();
-		//conn = dataSource.getConnection();
-	}
+		try {
+			
+		
+		conn = dataSource.getConnection();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		}
 
-/*	@PreDestroy
+	/**
+	 * 
+	 * @throws SQLException
+	 */
+	@PreDestroy
 	public void cleanUp() throws SQLException {
 		conn.close();
-	}*/
+	}
 
+	/**
+	 * 
+	 * @param ciId
+	 * @return Map <String, String>
+	 */
 	public HashMap<String, String> getCIAttrNameAndValuesMapByCiId(int ciId) {
 
 		HashMap<String, String> cIAttrNameAndValuesMap = new HashMap<>();
@@ -74,6 +89,12 @@ public class KloopzCmDal {
 
 	}
 
+	/**
+	 * 
+	 * @param platformCiId
+	 * @param attributeName
+	 * @return String attributeValue
+	 */
 	public String getciAttrValueByCiIdAndAttrName(int platformCiId, String attributeName) {
 
 		String SQL_SELECT_ciAttrValueByCiIdAndAttrName = "SELECT ca.df_attribute_value, ca.dj_attribute_value  "
@@ -121,10 +142,16 @@ public class KloopzCmDal {
 
 	}
 
+	/**
+	 * 
+	 * @param ns
+	 * @param clazz
+	 * @param platformName
+	 * @return Map<Integer, String>
+	 */
 	public Map<Integer, String> getCiIdsForNsClazzAndPlatformCiName(String ns, String clazz, String platformName) {
 
 		Map<Integer, String> map = new HashMap<Integer, String>();
-		// List<Integer> ciIds = new ArrayList<Integer>();
 
 		try {
 
@@ -170,6 +197,13 @@ public class KloopzCmDal {
 		return map;
 
 	}
+
+	/**
+	 * 
+	 * @param ns
+	 * @param clazz
+	 * @return Map<Integer, String>
+	 */
 
 	public Map<Integer, String> getCiIdsAndCiNameForNsAndClazzMap(String ns, String clazz) {
 

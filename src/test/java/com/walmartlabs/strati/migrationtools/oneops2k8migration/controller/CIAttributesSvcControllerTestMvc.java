@@ -5,37 +5,38 @@ import static org.mockito.Mockito.when;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.assertj.core.api.Assertions;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.MockitoAnnotations;
+import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.RequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import com.walmartlabs.strati.migrationtools.oneops2k8migration.Oneops2k8migrationApplicationTests;
-import com.walmartlabs.strati.migrationtools.oneops2k8migration.dal.KloopzCmDal;
 import com.walmartlabs.strati.migrationtools.oneops2k8migration.service.CIAttributesService;
 import com.walmartlabs.strati.migrationtools.oneops2k8migration.util.MigrationUtil;
-import com.walmartlabs.strati.migrationtools.oneops2k8migration.util.OOPhases;
 import com.walmartlabs.strati.migrationtools.oneops2k8migration.util.Platform;
 
 /**
  * @author dsing17
  *
  */
-public class CIAttributesSvcControllerTest extends Oneops2k8migrationApplicationTests {
+@RunWith(SpringRunner.class)
+@WebMvcTest(value = CIAttributesSvcController.class, secure = false)
+public class CIAttributesSvcControllerTestMvc {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
-
-
 	@MockBean
-	KloopzCmDal dal;
-	
-	@MockBean
-	private CIAttributesService svc;
+	private CIAttributesService service;
 
 	@MockBean
 	private MigrationUtil util;
@@ -43,35 +44,12 @@ public class CIAttributesSvcControllerTest extends Oneops2k8migrationApplication
 	@MockBean
 	Platform platform;
 
-	@InjectMocks
-	CIAttributesSvcController controller;
-	
-	@Before
-	public void init() {
-		
-		MockitoAnnotations.initMocks(this);
-	}
-	
+	@Autowired
+	private MockMvc mockMvc;
+
 	@Test
 	public void getCiAttributesForTomcatMigrationTest() throws Exception {
 
-		
-		String orgName = "TestOrg";
-		String assemblyName = "TestAssembly";
-		String platformName = "TestPlatform";
-		String envName = "dev";
-
-		platform.setOrgName(orgName);
-		platform.setAssemblyName(assemblyName);
-		platform.setPlatformName(platformName);
-		platform.setEnvName(envName);
-
-		String ns = util.buildNsPath(orgName, assemblyName);
-		platform.setNs(ns);
-		platform.setNsForPlatformCiComponents(
-				new MigrationUtil().getnsForPlatformCiComponents(ns, platformName, OOPhases.OPERATE, envName));
-		
-		
 		HashMap<String, String> bomTomcatCiAttributesMap = new HashMap<>();
 
 		bomTomcatCiAttributesMap.put("tomcatAttribName1", "tomcatAttribValue1");
@@ -87,17 +65,22 @@ public class CIAttributesSvcControllerTest extends Oneops2k8migrationApplication
 		platAttribsMapForTomcatAndArtifactCI.putAll(bomTomcatCiAttributesMap);
 		platAttribsMapForTomcatAndArtifactCI.putAll(bomArtifactCiAttributesMap);
 
-		when(svc.getPlatAttribsMapForTomcatAndArtifactCI(platform))
-				.thenReturn(platAttribsMapForTomcatAndArtifactCI);
+		when(service.getPlatAttribsMapForTomcatAndArtifactCI(platform)).thenReturn(platAttribsMapForTomcatAndArtifactCI);
 
 		String mapObjectToYaml = new MigrationUtil().yamlifyObject(platAttribsMapForTomcatAndArtifactCI);
 
 		when(util.yamlifyObject(platAttribsMapForTomcatAndArtifactCI)).thenReturn(mapObjectToYaml);
 
-		String actualStringifiedYamlResponse=controller.getCiAttributesForTomcatMigration(orgName, assemblyName, platformName, envName);
+		RequestBuilder requestBuilder = MockMvcRequestBuilders
+				.get("/org/TestOrg/assmebly/TestAssembly/platform/TestPlatform/env/dev")
+				.accept(MediaType.TEXT_PLAIN_VALUE);
 
-		Assert.assertEquals(mapObjectToYaml, actualStringifiedYamlResponse);
-		
+		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+
+		Assert.assertEquals(mapObjectToYaml, result.getResponse().getContentAsString());
+		Assertions.assertThat(result.getResponse().getStatus()).isEqualTo(200);
+		Assertions.assertThat(result).isNotNull();
+
 	}
 
 }

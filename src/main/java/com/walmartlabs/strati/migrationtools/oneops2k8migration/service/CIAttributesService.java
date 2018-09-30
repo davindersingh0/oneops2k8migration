@@ -27,10 +27,31 @@ public class CIAttributesService {
 
 	KloopzCmDal dal;
 
+	/**
+	 * 
+	 * @param Kloopz
+	 * @param MigrationUtil
+	 */
 	public CIAttributesService(KloopzCmDal dal, MigrationUtil util) {
 		this.dal = dal;
 	}
 
+	
+	public KloopzCmDal getDal() {
+		return dal;
+	}
+
+
+	public void setDal(KloopzCmDal dal) {
+		this.dal = dal;
+	}
+
+
+	/**
+	 * 
+	 * @param ciId
+	 * @return Map<String, String> ciAttrNameAndValuesMap
+	 */
 	private Map<String, String> getCiAttributesByCiId(int ciId) {
 
 		Map<String, String> ciAttrNameAndValuesMap = new HashMap<>();
@@ -40,6 +61,11 @@ public class CIAttributesService {
 
 	}
 
+	/**
+	 * 
+	 * @param platform
+	 * @return Map<String, String> platAttribsMapForTomcatAndArtifactCI
+	 */
 	public Map<String, String> getPlatAttribsMapForTomcatAndArtifactCI(Platform platform) {
 		Map<String, String> platAttribsMapForTomcatAndArtifactCI = new HashMap<>();
 
@@ -57,6 +83,14 @@ public class CIAttributesService {
 		return platAttribsMapForTomcatAndArtifactCI;
 	}
 
+	/**
+	 * 
+	 * @param circuit
+	 * @param bomCiType
+	 * @param nsForPlatformCiComponents
+	 * @return Map<String, String> bomCiAttributesMap
+	 */
+
 	private Map<String, String> getBomCiAttributes(Circuit circuit, BomCiType bomCiType,
 			String nsForPlatformCiComponents) {
 		BomClazzes bomCiClazz = getBomCiClazzForBomCiType(circuit, bomCiType);
@@ -66,6 +100,12 @@ public class CIAttributesService {
 		return bomCiAttributesMap;
 	}
 
+	/**
+	 * 
+	 * @param circuit
+	 * @param bomCiType
+	 * @return BomClazzes bomClazz
+	 */
 	private BomClazzes getBomCiClazzForBomCiType(Circuit circuit, BomCiType bomCiType) {
 
 		switch (circuit) {
@@ -120,6 +160,11 @@ public class CIAttributesService {
 
 	}
 
+	/**
+	 * 
+	 * @param platform
+	 * @return Circuit circuit
+	 */
 	private Circuit getCircuit(Platform platform) {
 		String platformDesignPhaseClazzClazz = "catalog.Platform";
 		Map<Integer, String> platformCiIdAndNameMap = dal.getCiIdsForNsClazzAndPlatformCiName(platform.getNs(),
@@ -137,6 +182,12 @@ public class CIAttributesService {
 		return circuit;
 	}
 
+	/**
+	 * 
+	 * @param nsForPlatformCiComponents
+	 * @param bomCiClazz
+	 * @return ciId
+	 */
 	private int getCiIdForBomCI(String nsForPlatformCiComponents, BomClazzes bomCiClazz) {
 		List<Integer> ciIdsListForBomCIClazz = getCiIdsListForBomCIClazz(nsForPlatformCiComponents,
 				bomCiClazz.getValue());
@@ -153,6 +204,12 @@ public class CIAttributesService {
 
 	}
 
+	/**
+	 * 
+	 * @param nsForPlatformCiComponents
+	 * @param bomCiClazz
+	 * @return ciIdsListForBomCIClazz
+	 */
 	private List<Integer> getCiIdsListForBomCIClazz(String nsForPlatformCiComponents, String bomCiClazz) {
 
 		Map<Integer, String> ciIdAndCiNamesMap = dal.getCiIdsAndCiNameForNsAndClazzMap(nsForPlatformCiComponents,

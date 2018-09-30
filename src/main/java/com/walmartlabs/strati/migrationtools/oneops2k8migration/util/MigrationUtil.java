@@ -19,6 +19,11 @@ public class MigrationUtil {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
+	/**
+	 * 
+	 * @param map
+	 * @return stringified Yaml
+	 */
 	public String yamlifyObject(Map<String, String> map) {
 
 		try {
@@ -37,6 +42,12 @@ public class MigrationUtil {
 
 	}
 
+	/**
+	 * 
+	 * @param orgName
+	 * @param assemblyName
+	 * @return String nsPath
+	 */
 	public String buildNsPath(String orgName, String assemblyName) {
 
 		StringBuffer buffer = new StringBuffer();
@@ -44,6 +55,14 @@ public class MigrationUtil {
 		return buffer.toString();
 	}
 
+	/**
+	 * 
+	 * @param ns
+	 * @param platformName
+	 * @param ooPhase
+	 * @param envName
+	 * @return String operate phase bom ci nsPath
+	 */
 	public String getnsForPlatformCiComponents(String ns, String platformName, OOPhases ooPhase, String envName) {
 
 		switch (ooPhase) {
