@@ -2,6 +2,10 @@ package com.walmartlabs.strati.migrationtools.oneops2k8migration.util;
 
 import org.springframework.stereotype.Component;
 
+/**
+ * @author dsing17
+ *
+ */
 @Component
 public class Platform {
 

@@ -1,5 +1,9 @@
 package com.walmartlabs.strati.migrationtools.oneops2k8migration.util;
 
+/**
+ * @author dsing17
+ *
+ */
 public enum OOPhases {
 
 	DESIGN("design"), TRANSITION("transition"), OPERATE("operate");

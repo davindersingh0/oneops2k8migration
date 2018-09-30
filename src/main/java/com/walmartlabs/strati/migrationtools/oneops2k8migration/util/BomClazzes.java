@@ -1,5 +1,9 @@
 package com.walmartlabs.strati.migrationtools.oneops2k8migration.util;
 
+/**
+ * @author dsing17
+ *
+ */
 public enum BomClazzes {
 
   oneops_tomcat_bom_clazz("bom.oneops.1.Tomcat"), 

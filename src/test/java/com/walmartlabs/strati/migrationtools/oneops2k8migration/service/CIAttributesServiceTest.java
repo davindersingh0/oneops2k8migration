@@ -22,6 +22,10 @@ import static org.mockito.Mockito.when;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author dsing17
+ *
+ */
 public class CIAttributesServiceTest extends Oneops2k8migrationApplicationTests {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
